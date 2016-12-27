@@ -2,8 +2,8 @@ package shenken.net.udp;
 
 public class Message
 { // int [.....]
-	public static final int PLAYER_SELECT_OK = 1;// playerID,teamID,IP (棄用)
-	public static final int GAME_START = 2;//
+	public static final int PLAYER_SELECT_OK = 1;// playerID,teamid,type(0=護衛,1=法師,3=平民)
+	public static final int GAME_START = 2;// (棄用)
 	public static final int PLAYER_HP_CHANGE = 3;// playerID,HP  ok
 	public static final int PLAYER_ATTACK = 4;// playerID  ok
 	public static final int PLAYER_INJURY = 5;// playerID  ok
@@ -19,8 +19,10 @@ public class Message
 	public static final int CASTLE_BUFF_ADD = 15;// teamID,itemType,time (棄用)
 	public static final int CASTLE_BUFF_REMOVE = 16;// teamID,itemType,time (棄用)
 	public static final int GAME_OVER = 17;// winTeamID
-	public static final int CASTLE_BUFF_LIST = 18;// teamID [type time fullTime]...  ok
-
+	public static final int CASTLE_BUFF_LIST = 18;// teamID,[type,time,fullTime],,,  ok
+	public static final int PLAYER_TELEPORT = 19;// playid,x,y,dir
+	public static final int PLAYER_STATE_CHANGE = 20;// playid,ATK,SPEED,ATK_SPEED,MAXHP
+	
 	private Message()
 	{
 

@@ -2,7 +2,6 @@ package shenken.net.udp.client;
 
 import static org.junit.Assert.*;
 
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Vector;
 

@@ -11,7 +11,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import shenken.server.cdc.Castle;
 import shenken.server.cdc.Player;
 import shenken.server.cdc.Room;
 
@@ -29,8 +28,6 @@ public class PlayerInfo extends JPanel implements ActionListener
 		HPLabels.add(new JLabel("Player 1"));
 		HPLabels.add(new JLabel("Player 2"));
 		HPLabels.add(new JLabel("Player 3"));
-		HPLabels.add(new JLabel("Player 4"));
-		HPLabels.add(new JLabel("Player 5"));
 		for (int i = 0; i < HPLabels.size(); i++)
 		{
 			GridBagConstraints temp = new GridBagConstraints();
@@ -50,9 +47,21 @@ public class PlayerInfo extends JPanel implements ActionListener
 		{
 			for (int i = 0; i < players.size(); i++)
 			{
-				Player temp = players.get(i);
-				HPLabels.get(i).setForeground(players.get(i).getMapViewColor());
-				HPLabels.get(i).setText(String.format("Player %s Team:%s HP:%s ATK:%s X:%s Y:%s Dir:%s isDead:%s DeadTime:%s", i,temp.getTeamID(), temp.getHP(),temp.getATK(),temp.getX(),temp.getY(),temp.getDir(),temp.getIsDead(),temp.getDeadTime()));
+				try
+				{
+					Player temp = players.get(i);
+					HPLabels.get(i).setForeground(players.get(i).getMapViewColor());
+					//HPLabels.get(i).setText(String.format("<HTML>Player %s <BR>Team:%s <BR>HP:%s <BR>ATK:%s <BR>X:%s Y:%s Dir:%s <BR>isDead:%s DeadTime:%s </HTML>", i,temp.getTeamID(), temp.getHP(),temp.getATK(),temp.getX(),temp.getY(),temp.getDir(),temp.getIsDead(),temp.getDeadTime()));
+					HPLabels.get(i).setText(String.format("Player %s Team:%s Job:%s HP:%s ATK:%s X:%s Y:%s Dir:%s isDead:%s DeadTime:%s", i, temp.getTeamID(), temp.getJobID(), temp.getHP(),temp.getATK(),temp.getX(),temp.getY(),temp.getDir(),temp.getIsDead(),temp.getDeadTime()));
+				} catch (Exception e)
+				{
+					// TODO: handle exception
+				}
+			}
+		}else{
+			for (int i = 0; i < HPLabels.size(); i++)
+			{
+				HPLabels.get(i).setText("Player " + i);
 			}
 		}
 		repaint();

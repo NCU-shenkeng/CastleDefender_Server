@@ -14,7 +14,6 @@ public class TCPServer implements Runnable
 	private static TCPServer instance;
 	private static ServerSocket server;
 	private final static int listenPort = 3319;
-	private final static int MAX_CONN = 4;
 	private static ExecutorService executor = Executors.newCachedThreadPool();
 	private static Vector<Socket> clientTable = new Vector<Socket>();
 	private static Vector<TCPServerListenClient> listenTable = new Vector<TCPServerListenClient>();
@@ -28,17 +27,19 @@ public class TCPServer implements Runnable
 
 	/**
 	 * init tcp server
+	 * @throws IOException 
 	 */
 
-	public void initTCPServer()
+	public void initTCPServer() throws IOException
 	{
 		try
 		{
 			server = new ServerSocket(listenPort);
-			new Thread(instance).start();
+			new Thread(instance,"TCP Server").start();
 		} catch (IOException e)
 		{
 			e.printStackTrace();
+			throw e;
 		}
 		System.out.println("server waiting for connection");
 	}
@@ -58,6 +59,7 @@ public class TCPServer implements Runnable
 				if (receiver != null)
 				{
 					receiver.afterAccept(client);
+					listen.setReceive(receiver);
 				}
 				System.out.println("client count " + clientTable.size());
 			}
@@ -86,9 +88,11 @@ public class TCPServer implements Runnable
 
 	public void onReceive(String msg)
 	{
-		if (receiver == null)
-			throw new NullPointerException("receiver null exception");
-		receiver.onReceive(msg);
+//		if (receiver == null)
+//			throw new NullPointerException("receiver null exception");
+		if (receiver != null){
+			receiver.onReceive(msg);
+		}
 	}
 
 	/**
@@ -113,7 +117,7 @@ public class TCPServer implements Runnable
 
 	public void registReceiveAction(IReceive receiver)
 	{
-		this.receiver = receiver;
+		TCPServer.receiver = receiver;
 	}
 
 	/**
@@ -130,7 +134,7 @@ public class TCPServer implements Runnable
 	 */
 	public Vector<Socket> getClientTable()
 	{
-		return this.clientTable;
+		return TCPServer.clientTable;
 	}
 
 	/**
@@ -139,7 +143,7 @@ public class TCPServer implements Runnable
 
 	public int getClientCount()
 	{
-		return this.clientTable.size();
+		return TCPServer.clientTable.size();
 	}
 
 	/**
@@ -148,7 +152,7 @@ public class TCPServer implements Runnable
 
 	public int getPort()
 	{
-		return this.listenPort;
+		return TCPServer.listenPort;
 	}
 
 	/**
@@ -181,8 +185,8 @@ public class TCPServer implements Runnable
 
 	private void addClientTable(Socket client)
 	{
-		if (this.clientTable.size() >= MAX_CONN)
-			return;
+		//if (this.clientTable.size() >= MAX_CONN)
+		//	return;
 		clientTable.add(client);
 	}
 
@@ -192,8 +196,8 @@ public class TCPServer implements Runnable
 	 */
 	private void addListenTable(TCPServerListenClient listen)
 	{
-		if (this.clientTable.size() >= MAX_CONN)
-			return;
+		//if (this.clientTable.size() >= MAX_CONN)
+		//	return;
 		listenTable.add(listen);
 	}
 
@@ -208,21 +212,21 @@ public class TCPServer implements Runnable
 		{
 			output = new DataOutputStream(client.getOutputStream());
 			output.writeUTF(msg);
-			System.out.println(client.getRemoteSocketAddress());
+			System.out.println(client.getRemoteSocketAddress() + " send " + msg);
 		} catch (IOException e)
 		{
 			e.printStackTrace();
 		}
 	}
 
-	/**
-	 * stop listen from one client
-	 */
-
-	private void stopListen(Socket client)
-	{
-		for (TCPServerListenClient listen : listenTable)
-			if (listen.isEqual(client))
-				listen.setRunning(false);
-	}
+//	/**
+//	 * stop listen from one client
+//	 */
+//
+//	private void stopListen(Socket client)
+//	{
+//		for (TCPServerListenClient listen : listenTable)
+//			if (listen.isEqual(client))
+//				listen.setRunning(false);
+//	}
 }

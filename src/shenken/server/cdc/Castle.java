@@ -9,7 +9,7 @@ import shenken.server.cdc.castle.buff.ShieldBuff;
 public class Castle
 {	
 	private int ID = 0;
-	private int HP = 301;
+	private int HP = 999;
 	private int defaultATK = 1;
 	private int displayATK = 0;
 	private int tempATK = 0;

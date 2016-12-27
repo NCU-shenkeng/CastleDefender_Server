@@ -16,7 +16,7 @@ public class Client implements Runnable
 	private static Thread instance;
 	private static Client UDPBC;
 
-	private int cycle = 200;
+	private int cycle = 100;
 
 	private Vector<IPtable> serverTable; // 伺服器位置表
 	private SendAction action; // 傳送訊息事件
@@ -42,7 +42,7 @@ public class Client implements Runnable
 		if (instance == null)
 		{
 			UDPBC = new Client();
-			instance = new Thread(UDPBC);
+			instance = new Thread(UDPBC,"UDP BroadCaster");
 			instance.start();
 		}
 	}
@@ -129,22 +129,26 @@ public class Client implements Runnable
 		{
 			try
 			{
-				byte buffer[] = action.send().getBytes(); // 將事件回傳字串轉換為位元串。
-				// 封裝該位元串成為封包 DatagramPacket，同時指定發送對象。
-				for (IPtable server : serverTable)
+				if (action != null)
 				{
-//					System.out.println("sendTo:" + server.port);
-					DatagramPacket packet = new DatagramPacket(buffer, buffer.length, server.address, server.port);
-					DatagramSocket socket;
+					byte buffer[] = action.send().getBytes(); // 將事件回傳字串轉換為位元串。
+					// 封裝該位元串成為封包 DatagramPacket，同時指定發送對象。
+					for (IPtable server : serverTable)
+					{
+//						System.out.println("sendTo:" + server.port);
+						DatagramPacket packet = new DatagramPacket(buffer, buffer.length, server.address, server.port);
+						DatagramSocket socket;
 
-					socket = new DatagramSocket();
-					socket.send(packet); // 發送
-					socket.close(); // 關閉 UDP socket.
+						socket = new DatagramSocket();
+						socket.send(packet); // 發送
+						socket.close(); // 關閉 UDP socket.
+					}
 				}
+				
 				Thread.sleep(cycle);
 			} catch (Exception e)
 			{
-				runFlag = false;
+				//runFlag = false;
 				e.printStackTrace();
 			}
 		}

@@ -1,6 +1,5 @@
 package shenken.net.tcp;
 import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
@@ -9,6 +8,7 @@ public class TCPServerListenClient implements Runnable {
 	private Socket client;
 	private DataInputStream input = null;
 	private boolean running = true;
+	private IReceive receive = null;
 	
 	public TCPServerListenClient(Socket client)
 	{
@@ -25,19 +25,20 @@ public class TCPServerListenClient implements Runnable {
 	
 	public void run() 
 	{
-		{
 			try 
 			{
 				while(running)
 				{
 					String msg = input.readUTF();
-					TCPServer.getInstance().onReceive(msg);
+					if (receive != null)
+					{
+						receive.onReceive(msg);
+					}
 				}
 			}
 			catch (IOException e) 
 			{
 			}
-		}
 	}
 	
 	public boolean isEqual(Socket socket){
@@ -48,4 +49,13 @@ public class TCPServerListenClient implements Runnable {
 		this.running = running;
 	}
 
+	public IReceive getReceive()
+	{
+		return receive;
+	}
+	
+	public void setReceive(IReceive receive)
+	{
+		this.receive = receive;
+	}
 }

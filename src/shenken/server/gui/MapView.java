@@ -5,10 +5,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Stroke;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.Vector;
 
 import javax.swing.JPanel;
@@ -33,6 +31,7 @@ public class MapView extends JPanel implements ActionListener
 		this.setBounds(0, 0, blockX * zoom, blockY * zoom);
 		setFocusable(true);
 		requestFocusInWindow();
+		//this.addComponentListener(new com);
 		new Timer(100, this).start();
 	}
 
@@ -89,7 +88,7 @@ public class MapView extends JPanel implements ActionListener
 	{
 		if (map != null)
 		{
-			Stroke temp = ((Graphics2D)g).getStroke();
+//			Stroke temp = ((Graphics2D)g).getStroke();
 			((Graphics2D)g).setStroke(new BasicStroke(2));
 			g.setColor(Color.RED);
 			
