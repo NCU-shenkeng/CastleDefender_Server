@@ -6,7 +6,8 @@ public class SworadManJob extends Job
 	{
 		setATK(3);
 		setMaxHP(3);
-		setPickSpeed(2000);
+		setMoveSpeed(250);
+		setPickSpeed(1000);
 		setATKSpeed(2000);
 	}
 }

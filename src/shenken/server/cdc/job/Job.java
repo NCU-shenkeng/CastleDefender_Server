@@ -4,7 +4,7 @@ public abstract class Job
 {
 	private int ATK = 0;
 	private int PickSpeed = 3000;
-	private int Speed = 1000;
+	private int MoveSpeed = 1000;
 	private int ATKSpeed = 1000;
 	private int MaxHP = 3;
 	
@@ -55,6 +55,11 @@ public abstract class Job
 		ATKSpeed = aTKSpeed;
 	}
 	
+	public void setMoveSpeed(int moveSpeed)
+	{
+		MoveSpeed = moveSpeed;
+	}
+	
 	public int getATK()
 	{
 		return ATK;
@@ -70,9 +75,9 @@ public abstract class Job
 		return PickSpeed;
 	}
 	
-	public int getSpeed()
+	public int getMoveSpeed()
 	{
-		return Speed;
+		return MoveSpeed;
 	}
 	
 	public int getATKSpeed()

@@ -18,6 +18,7 @@ import shenken.net.tcp.TCPServer;
 import shenken.net.udp.client.Client;
 import shenken.server.cdc.Room;
 import shenken.server.gui.CastleInfo;
+import shenken.server.gui.GameSetInfo;
 import shenken.server.gui.MainWindow;
 import shenken.server.gui.MapView;
 import shenken.server.gui.PlayerInfo;
@@ -28,6 +29,7 @@ public class Main
 	static MapView mapView = new MapView();
 	static PlayerInfo playerView = new PlayerInfo();
 	static CastleInfo castleInfo = new CastleInfo();
+	static GameSetInfo gameSetInfo = new GameSetInfo();
 	
 	public static void main(String[] args)
 	{	
@@ -39,9 +41,9 @@ public class Main
 			newGame();
 			new Thread(new Watchdog(),"Watchdog").start();
 			
-			JPanel gameSitch = new JPanel();
-			gameSitch.setLayout(new BorderLayout(15, 0));
-			JButton gameStart = new JButton("Game Start");
+			JPanel gameSwitch = new JPanel();
+			gameSwitch.setLayout(new BorderLayout(15, 0));
+			JButton gameStart = new JButton("Game Re-Start");
 			gameStart.addActionListener(new ActionListener()
 			{
 				
@@ -63,10 +65,11 @@ public class Main
 					
 				}
 			});
-			gameSitch.add(BorderLayout.CENTER, gameStart);
-			gameSitch.add(BorderLayout.EAST, gameClose);
+			gameSwitch.add(BorderLayout.CENTER, gameStart);
+			gameSwitch.add(BorderLayout.EAST, gameClose);
 			MainWindow.getWindow().getContentPane().setLayout(new BorderLayout(3,3));
-			MainWindow.getWindow().getContentPane().add(BorderLayout.NORTH,gameSitch);
+			MainWindow.getWindow().getContentPane().add(BorderLayout.WEST, gameSetInfo);;
+			MainWindow.getWindow().getContentPane().add(BorderLayout.NORTH,gameSwitch);
 			MainWindow.getWindow().getContentPane().add(BorderLayout.CENTER,mapView);
 			MainWindow.getWindow().getContentPane().add(BorderLayout.SOUTH,playerView);
 			MainWindow.getWindow().getContentPane().add(BorderLayout.EAST,castleInfo);
@@ -91,9 +94,7 @@ public class Main
 			Vector<PlayerIPaddress> iptable = new Vector<PlayerIPaddress>();
 			try
 			{
-				iptable.add(new PlayerIPaddress("127.0.0.1",3011));
-//				iptable.add(new PlayerIPaddress("140.115.59.204",3010));
-//				iptable.add(new PlayerIPaddress("140.115.52.17",3010));
+				iptable.add(new PlayerIPaddress("127.0.0.1",3011));//for god view tool
 				Client.getUDPBC().setClientIPTable(iptable);
 				Client.getUDPBC().setSendAction(room);
 				TCPServer.getInstance().registReceiveAction(room);
@@ -103,6 +104,11 @@ public class Main
 				e.printStackTrace();
 			}
 			
+			room.setMaxPlayer(gameSetInfo.getMaxPlayer());
+			room.setRandomCreatItemCD(gameSetInfo.getRandomCreatIitemCD());
+			room.setInitCreatItemCount(gameSetInfo.getDefaultCreatIitemCount());
+			room.initRoom();
+			room.setDefaultCastleHP(gameSetInfo.getCastelDefaultHP());
 
 			mapView.setPlayerTable(room.getPlayerTable());
 			mapView.setMapTable(room.getMap().getBlock());

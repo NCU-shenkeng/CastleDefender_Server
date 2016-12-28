@@ -25,6 +25,7 @@ import shenken.server.cdc.castle.buff.CastleBuff;
 import shenken.server.cdc.castle.buff.CastleHPChangeEachBuff;
 import shenken.server.cdc.castle.buff.HealthBuff;
 import shenken.server.cdc.castle.buff.OpportunityBuff;
+import shenken.server.cdc.castle.buff.ShieldBuffInvincible;
 import shenken.server.cdc.castle.buff.ShieldBuffOne;
 import shenken.server.cdc.castle.buff.ShieldBuffThree;
 import shenken.server.cdc.castle.buff.ShieldBuffTwo;
@@ -60,9 +61,16 @@ public class Room implements Runnable, SendAction, IReceive
 		boardcastQueue = new Vector<>();
 		castles = new Vector<>();
 		playerTable = new Vector<>();
+		// debugMode();
+	}
+	
+	/**
+	 * ªì©l¤Æ¹CÀ¸
+	 */
+	public void initRoom()
+	{
 		initCastles();
 		initDefaultItem();
-		// debugMode();
 	}
 
 	/**
@@ -86,17 +94,8 @@ public class Room implements Runnable, SendAction, IReceive
 
 		castles.get(0).getEnemyList().add(castles.get(1));
 		castles.get(1).getEnemyList().add(castles.get(0));
-		castles.get(0).getBuffList().add(new ATKBuffThree(15000));
-		castles.get(0).getBuffList().add(new ATKBuffThree(15000));
-		castles.get(0).getBuffList().add(new ATKBuffThree(15000));
-		castles.get(0).getBuffList().add(new ATKBuffThree(15000));
-		castles.get(1).getBuffList().add(new ATKBuffThree(15000));
-		castles.get(1).getBuffList().add(new ATKBuffThree(150000));
-		castles.get(1).getBuffList().add(new ATKBuffThree(150000));
-		castles.get(1).getBuffList().add(new ATKBuffThree(150000));
-		castles.get(1).getBuffList().add(new ATKBuffThree(150000));
-		castles.get(1).getBuffList().add(new ATKBuffThree(150000));
-		castles.get(1).getBuffList().add(new ATKBuffThree(150000));
+		castles.get(0).getBuffList().add(new ShieldBuffInvincible(5000));
+		castles.get(1).getBuffList().add(new ShieldBuffInvincible(5000));
 	}
 
 	/**
@@ -111,42 +110,49 @@ public class Room implements Runnable, SendAction, IReceive
 			{
 				if (gameStart)
 				{
+					boardcastQueue.add(String.format("%s", Message.GAME_START));
 					calcCastleStats();
 					calcCastleDamage();
 					calcGemaIsEnd();
 					if (!gameIsEnd)
 					{
 						calcRandomCreatItem();
-						boradcastCastleHPAndBuffList();
 						boradcastPlayStats();
+						boradcastCastleHPAndBuffList();
 						boradcastLoaction();
 						boardcastMapItemList();
 					}
 				} else
 				{
-					//for debug
 					boardcastMapItemList();
+					boradcastCastleHPAndBuffList();
 					
-					for (Player player : playerTable)
-					{
-						if (player.getIsSelectJob())
-						{
-							boardcastQueue.add(String.format("%s,%s,%s,%s", Message.PLAYER_SELECT_OK, player.getID(),
-									player.getTeamID(), player.getJobID()));
-							boardcastQueue.add(String.format("%s,%s,%s,%s,%s", Message.PLAYER_TELEPORT, player.getID(),
-									player.getX(), player.getY(), player.getDir()));
-//							System.out.println(String.format("%s,%s,%s,%s,%s", Message.PLAYER_TELEPORT, player.getID(),
-//									player.getX(), player.getY(), player.getDir()));
-						}
-					}
 					if (playerTable.size() == startPlayerCount)
 					{
 						if (checkAllPlayerSelectJob() || startPlayerCount == 0)
 						{
-							Thread.sleep(gameStartDelay);
-							gameStart = true;
-							boardcastQueue.add(String.format("%s", Message.GAME_START));
-							System.out.println("Message.GAME_START");
+							if (gameStartDelay < 1)
+							{
+								gameStart = true;
+								boardcastQueue.add(String.format("%s", Message.GAME_START));
+								System.out.println("Message.GAME_START");
+							} else
+							{
+								for (Player player : playerTable)
+								{
+										boardcastQueue.add(String.format("%s,%s,%s,%s", Message.PLAYER_SELECT_OK, player.getID(),
+												player.getTeamID(), player.getJobID()));
+								}
+								for (Player player : playerTable)
+								{
+									if (player.getIsSelectJob())
+									{
+										boardcastQueue.add(String.format("%s,%s,%s,%s,%s", Message.PLAYER_TELEPORT, player.getID(),
+												player.getX(), player.getY(), player.getDir()));
+									}
+								}
+								gameStartDelay -= refreshTime;
+							}
 						}
 					}
 				}
@@ -306,6 +312,7 @@ public class Room implements Runnable, SendAction, IReceive
 				if (temp instanceof CastleHPChangeEachBuff)
 				{
 					calcCastleChangeHPEach(castles.get(0), castles.get(1));
+					boardcastQueue.addElement(String.format("%s", Message.CASTLE_BUFF_HP_CAHGE));
 				}
 				if (temp instanceof StealBuff)
 				{
@@ -439,7 +446,6 @@ public class Room implements Runnable, SendAction, IReceive
 				randomX = targetX + (random.nextInt(teleportTargetRange) - (teleportTargetRange / 2));
 				randomY = targetY + (random.nextInt(teleportTargetRange) - (teleportTargetRange / 2));
 				if (map.getBlockCanPass(randomX, randomY))
-					;
 				{
 					needRandomLocation = false;
 				}
@@ -470,9 +476,9 @@ public class Room implements Runnable, SendAction, IReceive
 	 */
 	private void randomCreatItem()
 	{
-		boolean pass = true;
+		boolean needRandom = true;
 		Random random = new Random();
-		while (pass)
+		while (needRandom)
 		{
 			int randomX = random.nextInt(Map.blockWidth);
 			int randomY = random.nextInt(Map.blockHeight);
@@ -481,7 +487,7 @@ public class Room implements Runnable, SendAction, IReceive
 			{
 				if (map.getBlockItem(randomX, randomY) == null)
 				{
-					switch (random.nextInt(12) + 1)
+					switch (random.nextInt(25) + 1)
 					{
 					case 1:
 						map.setBlockITem(randomX, randomY, new ATKBuff(5000));
@@ -501,38 +507,48 @@ public class Room implements Runnable, SendAction, IReceive
 					case 6:
 						map.setBlockITem(randomX, randomY, new SpeedBuffThree(5000));
 						break;
+						
+						
 					case 7:
+					case 8:
+					case 9:
 						map.setBlockITem(randomX, randomY, new ShieldBuffOne(30000));
 						break;
-					case 8:
+						
+					case 10:
+					case 11:
+					case 12:
 						map.setBlockITem(randomX, randomY, new ShieldBuffTwo(30000));
 						break;
-					case 9:
-						map.setBlockITem(randomX, randomY, new ShieldBuffThree(30000));
-						break;
-					case 10:
-						map.setBlockITem(randomX, randomY, new CastleHPChangeEachBuff());
-						break;
-					case 11:
-						map.setBlockITem(randomX, randomY, new HealthBuff());
-						break;
-					case 12:
-						map.setBlockITem(randomX, randomY, new StealBuff());
-						break;
+						
 					case 13:
 					case 14:
+						map.setBlockITem(randomX, randomY, new ShieldBuffThree(30000));
+						break;
+						
 					case 15:
+						map.setBlockITem(randomX, randomY, new CastleHPChangeEachBuff());
+						break;
+						
+						
+					case 16:
+					case 17:
+						map.setBlockITem(randomX, randomY, new HealthBuff());
+						break;
+						
+					case 18:
+						map.setBlockITem(randomX, randomY, new TeleportToTargetBuff());
+						break;
+					case 19:
+					case 20:
+						map.setBlockITem(randomX, randomY, new StealBuff());
+						break;
+						
+					default:
 						map.setBlockITem(randomX, randomY, new OpportunityBuff());
 						break;
-					default:
-						break;
 					}
-					// for debug use
-					if (random.nextInt(30) < 20)
-					{
-						map.setBlockITem(randomX, randomY, new ATKBuffThree(50000));
-					}
-					pass = false;
+					needRandom = false;
 				}
 			}
 		}
@@ -547,7 +563,7 @@ public class Room implements Runnable, SendAction, IReceive
 	{
 		Random random = new Random();
 		CastleBuff temp;
-		switch (random.nextInt(9) + 1)
+		switch (random.nextInt(13) + 1)
 		{
 		case 1:
 			temp = new ATKBuff(50000);
@@ -568,12 +584,25 @@ public class Room implements Runnable, SendAction, IReceive
 			temp = new SpeedBuffThree(50000);
 			break;
 		case 7:
+			temp = new HealthBuff();
+			break;
 		case 8:
+			temp = new StealBuff();
+			break;
 		case 9:
-			temp = new ShieldBuffOne(1200000);
+			temp = new ShieldBuffOne(50000);
+			break;
+		case 10:
+			temp = new ShieldBuffTwo(50000);
+			break;
+		case 11:
+			temp = new ShieldBuffThree(50000);
+			break;
+		case 12:
+			temp = new CastleHPChangeEachBuff();
 			break;
 		default:
-			temp = null;
+			temp = new TeleportToTargetBuff();
 			break;
 		}
 		return temp;
@@ -664,7 +693,7 @@ public class Room implements Runnable, SendAction, IReceive
 				player.setATK(newJob.getATK());
 				player.setHP(newJob.getMaxHP());
 				player.setMaxHP(newJob.getMaxHP());
-				player.setPickFullCD(newJob.getPickSpeed());
+				player.setPickFullCDDefault(newJob.getPickSpeed());
 				player.setIsSelectJob(true);
 			}
 		}
@@ -685,7 +714,15 @@ public class Room implements Runnable, SendAction, IReceive
 				CastleBuff tempBuff = map.getBlockItem(player.getX(), player.getY());
 				if (tempBuff != null)
 				{
-					player.setPickCD(player.getPickFullCD());
+					if (tempBuff instanceof CastleHPChangeEachBuff)
+					{
+						player.setPickCD(player.getPickFullCDDefault() * 3);
+						player.setPickFullCD(player.getPickFullCDDefault() * 3);
+					} else
+					{
+						player.setPickCD(player.getPickFullCDDefault());
+						player.setPickFullCD(player.getPickFullCDDefault());
+					}
 					player.setDoPicking(true);
 				} else
 				{
@@ -857,19 +894,19 @@ public class Room implements Runnable, SendAction, IReceive
 	public void afterAccept(Socket client)
 	{
 		int playerID = TCPServer.getInstance().getClientCount() - 1;
-//		if (playerID >= maxPlayer)
-//		{
-//			try
-//			{
-//				TCPServer.getInstance().sendMsg(playerID, String.format("%s", shenken.net.tcp.Message.ROOM_FULL));
-//				client.close();
-//				TCPServer.getInstance().getClientTable().remove(playerID);
-//			} catch (IOException e)
-//			{
-//				System.out.println("kick player:room full");
-//				e.printStackTrace();
-//			}
-//		} else
+		if (playerID >= maxPlayer)
+		{
+			try
+			{
+				TCPServer.getInstance().sendMsg(playerID, String.format("%s", shenken.net.tcp.Message.ROOM_FULL));
+				client.close();
+				TCPServer.getInstance().getClientTable().remove(playerID);
+			} catch (IOException e)
+			{
+				System.out.println("kick player:room full");
+				e.printStackTrace();
+			}
+		} else
 		{
 			Player newPlayer = new Player(playerID);
 			playerTable.add(newPlayer);
@@ -927,6 +964,30 @@ public class Room implements Runnable, SendAction, IReceive
 			}
 		}
 		System.out.println(String.format("PlayerTableCount:%s", playerTable.size()));
+	}
+	
+	public void setMaxPlayer(int maxPlayer)
+	{
+		this.maxPlayer = maxPlayer;
+		this.startPlayerCount = maxPlayer;
+	}
+	
+	public void setInitCreatItemCount(int initCreatItemCount)
+	{
+		this.initCreatItemCount = initCreatItemCount;
+	}
+	
+	public void setRandomCreatItemCD(int randomCreatItemCD)
+	{
+		this.randomCreatItemCD = randomCreatItemCD;
+	}
+	
+	public void setDefaultCastleHP(int HP)
+	{
+		for (Castle castle : castles)
+		{
+			castle.setHP(HP);
+		}
 	}
 
 	public Vector<Player> getPlayerTable()

@@ -22,6 +22,7 @@ public class Message
 	public static final int CASTLE_BUFF_LIST = 18;// teamID,[type,time,fullTime],,,  ok
 	public static final int PLAYER_TELEPORT = 19;// playid,x,y,dir
 	public static final int PLAYER_STATE_CHANGE = 20;// playid,ATK,SPEED,ATK_SPEED,MAXHP
+	public static final int CASTLE_BUFF_HP_CAHGE = 21;//
 	
 	private Message()
 	{

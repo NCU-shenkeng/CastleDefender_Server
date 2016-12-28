@@ -5,8 +5,9 @@ public class SageJob extends Job
 	public SageJob()
 	{
 		setATK(1);
-		setMaxHP(4);
-		setPickSpeed(1000);
+		setMaxHP(3);
+		setMoveSpeed(350);
+		setPickSpeed(700);
 		setATKSpeed(500);
 	}
 }

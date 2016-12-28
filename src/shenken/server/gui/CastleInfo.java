@@ -50,7 +50,7 @@ public class CastleInfo extends JPanel implements ActionListener
 					String buffString = "";
 					for (CastleBuff castleBuff : temp.getBuffList())
 					{
-						buffString += String.format("<br>%s Time:%s FullTime:%s<br>", castleBuff.getClass().getName(),castleBuff.getTime(),castleBuff.getFullTime());
+						buffString += String.format("<br>%s Time:%s FullTime:%s<br>", castleBuff.getClass().getName().replace("shenken.server.cdc.castle.buff.", ""),castleBuff.getTime(),castleBuff.getFullTime());
 					}
 					HPLabels.get(i).setText(String.format("<HTML>--Castle %s <br> HP %s <br> ATKSwitch %s <br> ATK %s <br> Speed %s <br> Shield %s <br> BuffList %s</HTML>", i,temp.getHP(),temp.getATK(),temp.getDisplayATK(),temp.getSpeed(),temp.getShield(),buffString));	
 				} catch (NullPointerException  e)

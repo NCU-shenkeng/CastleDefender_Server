@@ -19,7 +19,8 @@ public class Player
 	private boolean isDead = false;
 	private boolean isSelectJob = false;
 	private int pickCD = 0;
-	private int pickFullCD = 2000;
+	private int pickFullCD = 0;
+	private int pickFullCDDefault = 2000;
 	private int speed;
 	private int reviveTime = 3000;
 	private boolean doPicking = false;
@@ -30,29 +31,7 @@ public class Player
 	{
 		this.ID = ID;
 	}
-
-	public void updatePickState()
-	{
-	}
 	
-	public int getJobID()
-	{
-		return jobID;
-	}
-	
-	public void setJobID(int jobID)
-	{
-		this.jobID = jobID;
-	}
-	
-	public boolean getIsSelectJob(){
-		return this.isSelectJob;
-	}
-	
-	public void setIsSelectJob(boolean select){
-		this.isSelectJob = select;
-	}
-
 	public boolean isLocationIn(int x, int y){
 		if (X == x && Y == y)
 		{
@@ -125,6 +104,15 @@ public class Player
 		return temp;
 	}
 
+	public void setJobID(int jobID)
+	{
+		this.jobID = jobID;
+	}
+
+	public void setIsSelectJob(boolean select){
+		this.isSelectJob = select;
+	}
+
 	public void setTeamID(int teamID)
 	{
 		this.teamID = teamID;
@@ -179,6 +167,11 @@ public class Player
 	public void setPickFullCD(int pickFullCD)
 	{
 		this.pickFullCD = pickFullCD;
+	}
+	
+	public void setPickFullCDDefault(int pickFullCDDefault)
+	{
+		this.pickFullCDDefault = pickFullCDDefault;
 	}
 	
 	public void setDir(String string)
@@ -240,6 +233,15 @@ public class Player
 		}
 	}
 	
+	public int getJobID()
+	{
+		return jobID;
+	}
+
+	public boolean getIsSelectJob(){
+		return this.isSelectJob;
+	}
+
 	public int getDeadTime()
 	{
 		return deadTime;
@@ -273,6 +275,11 @@ public class Player
 	public boolean getIsDead()
 	{
 		return this.isDead;
+	}
+	
+	public int getPickFullCDDefault()
+	{
+		return pickFullCDDefault;
 	}
 
 	public int getX()
