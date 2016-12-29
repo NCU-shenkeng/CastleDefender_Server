@@ -14,6 +14,6 @@ public class SpeedBuff extends CastleBuff
 	@Override
 	public void calcBuff(Castle castle)
 	{
-		castle.setSpeed((castle.getSpeed() / 100) * 95);
+		castle.setSpeed((castle.getSpeed() / 100) * 75);
 	}
 }

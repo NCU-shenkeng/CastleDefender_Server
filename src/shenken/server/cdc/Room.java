@@ -212,7 +212,7 @@ public class Room implements Runnable, SendAction, IReceive
 	/**
 	 * 檢測遊戲結束條件
 	 */
-	private void calcGemaIsEnd()
+	public void calcGemaIsEnd()
 	{
 		if (castles.get(0).getHP() < 1)
 		{
@@ -490,40 +490,40 @@ public class Room implements Runnable, SendAction, IReceive
 					switch (random.nextInt(25) + 1)
 					{
 					case 1:
-						map.setBlockITem(randomX, randomY, new ATKBuff(5000));
+						map.setBlockITem(randomX, randomY, new ShieldBuffOne(10000));
 						break;
 					case 2:
-						map.setBlockITem(randomX, randomY, new ATKBuffTwo(5000));
+						map.setBlockITem(randomX, randomY, new ShieldBuffTwo(15000));
 						break;
 					case 3:
-						map.setBlockITem(randomX, randomY, new ATKBuffThree(5000));
+						map.setBlockITem(randomX, randomY, new ShieldBuffThree(20000));
 						break;
 					case 4:
-						map.setBlockITem(randomX, randomY, new SpeedBuff(5000));
+						map.setBlockITem(randomX, randomY, new SpeedBuff(20000));
 						break;
 					case 5:
-						map.setBlockITem(randomX, randomY, new SpeedBuffTwo(5000));
+						map.setBlockITem(randomX, randomY, new SpeedBuffTwo(20000));
 						break;
 					case 6:
-						map.setBlockITem(randomX, randomY, new SpeedBuffThree(5000));
+						map.setBlockITem(randomX, randomY, new SpeedBuffThree(20000));
 						break;
 						
 						
 					case 7:
 					case 8:
 					case 9:
-						map.setBlockITem(randomX, randomY, new ShieldBuffOne(30000));
+						map.setBlockITem(randomX, randomY, new ATKBuff(5000));
 						break;
 						
 					case 10:
 					case 11:
 					case 12:
-						map.setBlockITem(randomX, randomY, new ShieldBuffTwo(30000));
+						map.setBlockITem(randomX, randomY, new ATKBuffTwo(5000));
 						break;
 						
 					case 13:
 					case 14:
-						map.setBlockITem(randomX, randomY, new ShieldBuffThree(30000));
+						map.setBlockITem(randomX, randomY, new ATKBuffThree(5000));
 						break;
 						
 					case 15:
@@ -566,22 +566,22 @@ public class Room implements Runnable, SendAction, IReceive
 		switch (random.nextInt(13) + 1)
 		{
 		case 1:
-			temp = new ATKBuff(50000);
+			temp = new ATKBuff(20000);
 			break;
 		case 2:
-			temp = new ATKBuffTwo(50000);
+			temp = new ATKBuffTwo(20000);
 			break;
 		case 3:
-			temp = new ATKBuffThree(50000);
+			temp = new ATKBuffThree(20000);
 			break;
 		case 4:
-			temp = new SpeedBuff(50000);
+			temp = new SpeedBuff(20000);
 			break;
 		case 5:
-			temp = new SpeedBuffTwo(50000);
+			temp = new SpeedBuffTwo(20000);
 			break;
 		case 6:
-			temp = new SpeedBuffThree(50000);
+			temp = new SpeedBuffThree(20000);
 			break;
 		case 7:
 			temp = new HealthBuff();
@@ -590,13 +590,13 @@ public class Room implements Runnable, SendAction, IReceive
 			temp = new StealBuff();
 			break;
 		case 9:
-			temp = new ShieldBuffOne(50000);
+			temp = new ShieldBuffOne(20000);
 			break;
 		case 10:
-			temp = new ShieldBuffTwo(50000);
+			temp = new ShieldBuffTwo(20000);
 			break;
 		case 11:
-			temp = new ShieldBuffThree(50000);
+			temp = new ShieldBuffThree(20000);
 			break;
 		case 12:
 			temp = new CastleHPChangeEachBuff();

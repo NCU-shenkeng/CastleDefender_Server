@@ -7,7 +7,7 @@ public class CastleHPChangeEachBuff extends CastleBuff
 
 	public CastleHPChangeEachBuff()
 	{
-		super(7, 0);
+		super(7, 1000);
 	}
 
 	@Override
